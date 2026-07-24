@@ -1,0 +1,25 @@
+{
+  "short_name": "Memory OS",
+  "name": "Memory OS - Operating System for Your Mind",
+  "description": "Offline-first spatial memory vault, notes, tasks, mind maps & knowledge graph.",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/dashboard",
+  "background_color": "#09090B",
+  "theme_color": "#09090B",
+  "display": "standalone",
+  "orientation": "any",
+  "categories": ["productivity", "utilities", "education"]
+}
