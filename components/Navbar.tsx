@@ -73,7 +73,7 @@ export function Navbar() {
               <Brain className="w-4 h-4 text-indigo-400" />
             </div>
           </div>
-          <span className="text-base tracking-tight font-semibold hidden sm:inline">LPU Memory OS</span>
+          <span className="text-base tracking-tight font-semibold hidden sm:inline">LPU Memory</span>
         </Link>
         <span className="text-zinc-700 text-sm hidden sm:inline">/</span>
         <h1 className="text-sm font-medium text-zinc-300">{getPageTitle(pathname)}</h1>

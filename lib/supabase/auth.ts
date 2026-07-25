@@ -64,7 +64,7 @@ export const authService = {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/dashboard`,
+        redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback?next=/dashboard`,
       },
     });
     if (error) throw error;
@@ -76,7 +76,7 @@ export const authService = {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/dashboard`,
+        redirectTo: `${typeof window !== 'undefined' ? window.location.origin : ''}/auth/callback?next=/dashboard`,
       },
     });
     if (error) throw error;
