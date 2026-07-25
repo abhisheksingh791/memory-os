@@ -1,15 +1,43 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Search as SearchIcon, FileText, CheckSquare, BookOpen, Bookmark as BookmarkIcon, Filter } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search as SearchIcon, FileText, CheckSquare, BookOpen, Bookmark as BookmarkIcon, Filter, Database } from 'lucide-react';
 import { memoryStorage } from '../../lib/storage';
+import { queryService } from '../../lib/supabase/queries';
+import { useMemoryStore } from '../../store/useMemoryStore';
 
 export default function SearchPage() {
   const [query, setQuery] = useState('');
   const [filterType, setFilterType] = useState<string>('all');
+  const [supabaseResults, setSupabaseResults] = useState<any[]>([]);
+  const { user, isGuest } = useMemoryStore();
 
-  const searchResults = query.trim() ? memoryStorage.search(query) : [];
-  const filteredResults = searchResults.filter((r) => {
+  useEffect(() => {
+    if (!query.trim()) {
+      setSupabaseResults([]);
+      return;
+    }
+
+    if (user && !isGuest && navigator.onLine) {
+      queryService.globalSearch(query, user.id).then((res) => {
+        const combined = [
+          ...(res.notes || []).map((n: any) => ({ ...n, itemType: 'note' })),
+          ...(res.tasks || []).map((t: any) => ({ ...t, itemType: 'task' })),
+          ...(res.bookmarks || []).map((b: any) => ({ ...b, itemType: 'bookmark' })),
+          ...(res.journal || []).map((j: any) => ({ ...j, itemType: 'journal', title: `Journal (${j.date})` })),
+        ];
+        setSupabaseResults(combined);
+      });
+    }
+  }, [query, user, isGuest]);
+
+  const searchResults = query.trim()
+    ? user && !isGuest && navigator.onLine && supabaseResults.length > 0
+      ? supabaseResults
+      : memoryStorage.search(query)
+    : [];
+
+  const filteredResults = searchResults.filter((r: any) => {
     if (filterType === 'all') return true;
     return r.itemType === filterType;
   });
@@ -20,7 +48,7 @@ export default function SearchPage() {
       <div className="space-y-4 pb-4 border-b border-zinc-800">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-100 tracking-tight">Global Search</h1>
-          <p className="text-xs text-zinc-400">Sub-millisecond fuzzy search engine powered by Fuse.js</p>
+          <p className="text-xs text-zinc-400">PostgreSQL Full Text Search & Fuse.js indexing</p>
         </div>
 
         <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-2xl px-4 py-3 text-sm text-zinc-100 shadow-glass">

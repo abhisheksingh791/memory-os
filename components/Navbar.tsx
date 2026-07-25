@@ -13,22 +13,25 @@ import {
   Sun, 
   Moon,
   Database,
-  Brain
+  Brain,
+  User as UserIcon,
+  LogOut
 } from 'lucide-react';
 import { useMemoryStore } from '../store/useMemoryStore';
 import { usePWA } from './PWAProvider';
 import { useTheme } from 'next-themes';
+import { authService } from '../lib/supabase/auth';
 
 export function Navbar() {
   const pathname = usePathname();
-  const { setCommandPaletteOpen, setQuickCaptureOpen, data } = useMemoryStore();
+  const { setCommandPaletteOpen, setQuickCaptureOpen, data, user, isGuest, setAuthModalOpen, setUser, setGuest } = useMemoryStore();
   const { isOnline } = usePWA();
   const { theme, setTheme } = useTheme();
 
   // Determine current page title
   const getPageTitle = (path: string) => {
     switch (path) {
-      case '/': return 'Memory OS';
+      case '/': return 'LPU Memory OS';
       case '/dashboard': return 'Dashboard';
       case '/notes': return 'Notes Vault';
       case '/tasks': return 'Tasks Kanban';
@@ -47,12 +50,18 @@ export function Navbar() {
       case '/trash': return 'Trash Bin';
       case '/search': return 'Global Search';
       case '/settings': return 'System Settings';
-      case '/about': return 'About Memory OS';
-      default: return 'Memory OS';
+      case '/about': return 'About LPU Memory OS';
+      default: return 'LPU Memory OS';
     }
   };
 
   const totalEntries = (data.notes?.length || 0) + (data.tasks?.length || 0) + (data.journals?.length || 0);
+
+  const handleSignOut = async () => {
+    await authService.signOut();
+    setUser(null);
+    setGuest(true);
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-800/80 px-4 md:px-8 py-3.5 flex items-center justify-between transition-colors">
@@ -64,7 +73,7 @@ export function Navbar() {
               <Brain className="w-4 h-4 text-indigo-400" />
             </div>
           </div>
-          <span className="text-base tracking-tight font-semibold hidden sm:inline">Memory OS</span>
+          <span className="text-base tracking-tight font-semibold hidden sm:inline">LPU Memory OS</span>
         </Link>
         <span className="text-zinc-700 text-sm hidden sm:inline">/</span>
         <h1 className="text-sm font-medium text-zinc-300">{getPageTitle(pathname)}</h1>
@@ -93,10 +102,10 @@ export function Navbar() {
               ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
               : 'bg-amber-500/10 border-amber-500/20 text-amber-400'
           }`}
-          title={isOnline ? 'Online - Offline Storage Active' : 'Offline Mode Active'}
+          title={isOnline ? 'Online - Supabase Active' : 'Offline Mode Active'}
         >
           {isOnline ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3 animate-pulse" />}
-          <span className="hidden lg:inline">{isOnline ? 'Local Vault' : 'Offline'}</span>
+          <span className="hidden lg:inline">{isOnline ? 'Supabase Sync' : 'Offline'}</span>
         </div>
 
         {/* Entry counter badge */}
@@ -113,6 +122,30 @@ export function Navbar() {
           <Plus className="w-4 h-4" />
           <span className="hidden sm:inline">Quick Capture</span>
         </button>
+
+        {/* Auth / Profile Trigger */}
+        {user ? (
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-xs font-bold" title={user.email || 'User'}>
+              {user.email ? user.email.charAt(0).toUpperCase() : 'U'}
+            </div>
+            <button
+              onClick={handleSignOut}
+              className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-rose-400 hover:bg-zinc-800 transition-colors"
+              title="Sign Out"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={() => setAuthModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 text-xs font-medium rounded-xl transition-all"
+          >
+            <UserIcon className="w-3.5 h-3.5 text-indigo-400" />
+            <span>Sign In</span>
+          </button>
+        )}
 
         {/* Theme Toggle */}
         <button

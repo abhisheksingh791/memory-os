@@ -1,174 +1,161 @@
-# 🧠 Memory OS
+# Memory OS — Supabase Production Backend Edition
 
-> **"The Operating System for Your Mind"**
-
-Memory OS is a portfolio-quality, production-ready, offline-first Progressive Web App (PWA) designed to feel like a seamless blend of **Apple, Notion, Linear, Obsidian, Arc Browser, and Vercel**.
-
-Built with **Next.js 15 App Router**, **TypeScript**, **Tailwind CSS**, **Framer Motion**, **Zustand**, and **Fuse.js**, Memory OS requires zero external backends or cloud databases. 100% of your notes, tasks, reflections, bookmarks, mind maps, and knowledge graphs are stored securely inside your browser's LocalStorage.
+Memory OS is a portfolio-grade, local-first spatial memory vault, rich markdown notebook, Kanban task planner, daily reflection tracker, knowledge graph visualizer, and mind map canvas — now fully transformed into a production-ready SaaS application backed by **Supabase PostgreSQL**, **Supabase Auth**, **Supabase Storage**, **Supabase Realtime**, and **Row Level Security (RLS)**.
 
 ---
 
-## ✨ Primary Features
+## 🌟 Key Features
 
-- 🚀 **100% Offline-First Architecture**: Powered by browser LocalStorage with zero server dependencies or network latency.
-- ⚡ **Sub-Millisecond Fuzzy Search**: Powered by Fuse.js for instantaneous retrieval across all notes, tasks, and bookmarks.
-- 📱 **Native Progressive Web App (PWA)**: Installable on iOS, Android, and Desktop with offline cache fallback and service worker.
-- 🧠 **Interactive Knowledge Graph Engine**: Node-link visualization of interconnected notes, tasks, tags, and collections.
-- 🌿 **Interactive Mind Map Canvas**: Collapsible visual tree editor for recursive idea breakdown and spatial planning.
-- 📝 **Rich Markdown & Visual Notes**: Live Markdown preview, tags, folder collections, favorite starring, and color labels.
-- 📋 **Tasks Kanban Board**: Status columns (*To Do*, *In Progress*, *Completed*), subtask checklist progress bars, and priority levels (*Urgent*, *High*, *Medium*, *Low*).
-- 📖 **Daily Journal & Mood Tracker**: Reflective daily log entries with weather context, mood badges, and prompt generators.
-- ⚡ **Raycast Command Palette (`Cmd + K`)**: Instant access to global search, page navigation, theme toggling, and data backup.
-- 🎨 **Spatial Dark Mode Aesthetic**: High-contrast obsidian dark palette (`#09090B`), glassmorphic blur filters, soft glowing shadows, and Geist font typography.
-- 💾 **100% Data Sovereignty**: One-click JSON backup export and instant JSON restore/import.
+* **Supabase Authentication**: Email & Password, Google OAuth, GitHub OAuth, Password Reset, Email Verification, Session Persistence, Protected Routes & Guest Mode.
+* **Production PostgreSQL Schema**: 27 fully normalized relational database tables with constraints, indexes, triggers, auto-updated timestamps, and full-text search (`tsvector`).
+* **Supabase Storage**: Managed cloud buckets for `avatars`, `images`, `voice-notes`, `documents`, `gallery`, and `backups`.
+* **Supabase Realtime**: Multi-user live sync for Notes, Tasks, Knowledge Graph, Mind Maps, Calendar, Notifications, Activity, and Favorites.
+* **PostgreSQL Full-Text Search (FTS)**: Fast content, tag, folder, and global search via GIN tsvector indexing.
+* **Offline-First Resilience & PWA**: Seamless background queue (`lib/sync/offlineSync.ts`), optimistic UI updates, conflict resolution, and PWA offline capabilities.
 
 ---
 
-## 🛠️ Tech Stack & Dependencies
+## ⚙️ Environment Variables
 
-- **Core**: Next.js 15 (App Router), React 19, TypeScript
-- **Styling**: Tailwind CSS, CSS Glassmorphism
-- **Design System**: Lucide React Icons, Geist Font Family, `next-themes`
-- **State Management**: Zustand
-- **Motion & Micro-Interactions**: Framer Motion
-- **Search Engine**: Fuse.js
-- **Visualization**: Custom SVG & Canvas Node Engines
-- **Date Handling**: `date-fns`
+Create a `.env.local` file in the root directory:
 
----
-
-## 📂 Folder Structure
-
-```text
-memory-os/
-├── app/
-│   ├── layout.tsx         # Root layout (Geist font, providers, Navbar, Sidebar)
-│   ├── page.tsx           # Portfolio Landing Page
-│   ├── dashboard/         # Command Dashboard
-│   ├── notes/             # Spatial Markdown Notes Vault
-│   ├── tasks/             # Action Items & Kanban Board
-│   ├── journal/           # Daily Reflection Logs
-│   ├── calendar/          # Memory History Calendar Grid
-│   ├── graph/             # Interactive Knowledge Graph
-│   ├── mindmap/           # Interactive Mind Map Canvas
-│   ├── collections/       # Workspaces & Folders
-│   ├── bookmarks/         # Web Links Manager
-│   ├── gallery/           # Media Vault & Lightbox
-│   ├── voicenotes/        # Audio Dictation Simulator
-│   ├── pdf/               # PDF Library & Annotation Inspector
-│   ├── timeline/          # Chronological Stream
-│   ├── favorites/         # Starred & Pinned Items
-│   ├── archive/           # Historical Vault
-│   ├── trash/             # Soft-Deleted Bin
-│   ├── search/            # Fuse.js Search Page
-│   ├── settings/          # LocalStorage Administration & JSON Backup
-│   ├── about/             # Architecture Specs
-│   ├── offline/           # PWA Offline Fallback
-│   ├── sitemap.ts         # Dynamic Sitemap
-│   └── robots.ts          # SEO Robots Directive
-├── components/
-│   ├── Navbar.tsx         # Top Header Bar
-│   ├── Sidebar.tsx        # Linear / Arc Desktop Navigation
-│   ├── BottomNav.tsx      # Native Mobile Navigation Bar
-│   ├── CommandPalette.tsx # Raycast Cmd+K Modal
-│   ├── QuickCaptureModal.tsx # Fast Capture Modal
-│   ├── KnowledgeGraphViewer.tsx # SVG Node Network Visualizer
-│   ├── MindMapCanvas.tsx  # Mind Map Canvas Tree
-│   ├── NoteCard.tsx       # Reusable Note Card
-│   ├── TaskCard.tsx       # Reusable Task Card
-│   ├── JournalCard.tsx    # Reusable Reflection Entry
-│   ├── BookmarkCard.tsx   # Reusable Web Link Card
-│   ├── StatCard.tsx       # Metric Summary Widget
-│   └── PWAProvider.tsx    # Service Worker & Install Prompt Listener
-├── lib/
-│   └── storage.ts         # Reusable LocalStorage Manager API
-├── store/
-│   └── useMemoryStore.ts  # Zustand Reactive State Store
-├── types/
-│   └── memory.ts          # TypeScript Type Specifications
-├── mock/
-│   └── initialData.ts     # Pre-populated Initial Vault Data
-├── public/
-│   ├── manifest.json      # PWA Web App Manifest
-│   ├── sw.js              # Service Worker Offline Cache Script
-│   └── icons/             # PWA App Icons
-└── tailwind.config.ts     # Tailwind Design Tokens & Glass Utilities
+```env
+# Supabase API Credentials
+NEXT_PUBLIC_SUPABASE_URL=https://your-supabase-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 ```
 
 ---
 
-## 🚀 Quick Start & Installation
+## 🗄️ Database Schema & RLS Policies
 
-### Prerequisites
+The database is built on **27 normalized tables** with strict **Row Level Security (RLS)** ensuring complete data isolation (`auth.uid() = user_id`).
 
-Ensure you have **Node.js 18.x** or higher installed.
+### Required Tables (27)
+1. `profiles` - User accounts & profile metadata
+2. `folders` - Spatial directory hierarchy
+3. `collections` - Categorized topics & workspaces
+4. `tags` - System-wide tags
+5. `notes` - Rich text & markdown notes with GIN `tsvector` FTS index
+6. `note_tags` - Many-to-many note-tag join table
+7. `tasks` - Kanban tasks with subtasks JSONB
+8. `journal_entries` - Daily reflection logs with mood tracking
+9. `bookmarks` - Web bookmarks with automatic favicon parsing
+10. `files` - Asset storage manifests
+11. `pdfs` - PDF documents with page annotations
+12. `voice_notes` - Audio recording metadata and transcripts
+13. `gallery` - Media images with aspect ratio specs
+14. `favorites` - Universal favorite items
+15. `recent_activity` - Audit activity logs
+16. `knowledge_nodes` - Knowledge graph concept nodes
+17. `knowledge_edges` - Dynamic node relationships
+18. `mind_maps` - Brainstorming canvases
+19. `mind_map_nodes` - Spatial node trees
+20. `mind_map_edges` - Branch links
+21. `calendar_events` - Event scheduler
+22. `notifications` - Alerts & reminders
+23. `settings` - User theme & system preferences
+24. `backups` - One-click database export snapshots
+25. `trash` - Soft-deleted trash items
+26. `shared_links` - Public link sharing with tokens & expiration
+27. `devices` - Registered user sessions & active devices
+
+---
+
+## 🪣 Supabase Storage Buckets
+
+1. `avatars` (Public) - Profile photos & avatars
+2. `images` (Public) - Embedded note images
+3. `voice-notes` (Public) - Audio recording files
+4. `documents` (Public) - PDF files & attachments
+5. `gallery` (Public) - Media gallery pictures
+6. `backups` (Private) - Encrypted JSON storage snapshots
+
+---
+
+## 🚀 Migration & Deployment Guide
+
+### 1. Apply Database Migration
+Run the migration script against your Supabase instance using the Supabase CLI or SQL Editor:
 
 ```bash
-# Clone the repository
-git clone https://github.com/your-username/memory-os.git
+# Using Supabase CLI
+supabase db push
 
-# Navigate into the project folder
-cd memory-os
+# Or run the SQL script in supabase/migrations/20260725000000_schema_and_rls.sql via Supabase Dashboard SQL Editor
+```
 
+### 2. Seed Data (Optional)
+Populate demo data for testing:
+
+```bash
+# Execute supabase/seed.sql in Supabase Dashboard SQL Editor
+```
+
+### 3. Build & Deploy Frontend (Next.js 15)
+
+```bash
 # Install dependencies
 npm install
-```
 
-### Run Locally
-
-Launch the Next.js development server:
-
-```bash
+# Run development server
 npm run dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
-
----
-
-## 📦 Production Build
-
-To test the production bundle locally:
-
-```bash
+# Production build test
 npm run build
+
+# Start production server
 npm run start
 ```
 
 ---
 
-## ☁️ Deploying on Vercel
+## 🏗️ Architecture & Codebase Structure
 
-Memory OS requires **zero environment variables** or server database configurations and can be deployed directly to Vercel in 1 click:
-
-1. Push code to your GitHub / GitLab repository.
-2. Import the project in the [Vercel Dashboard](https://vercel.com/new).
-3. Click **Deploy**.
+```
+p4/
+├── app/                  # Next.js 15 App Router pages
+├── components/           # UI components, AuthModal, ErrorBoundary
+├── lib/
+│   ├── supabase/
+│   │   ├── client.ts     # Supabase Browser Client
+│   │   ├── server.ts     # Supabase Server Client (@supabase/ssr)
+│   │   ├── auth.ts       # Authentication Service
+│   │   ├── storage.ts    # Storage Bucket Service
+│   │   ├── queries.ts    # Full Text Search & Relational Queries
+│   │   ├── mutations.ts  # Soft delete, restore, trash & batch updates
+│   │   └── types.ts      # Supabase TypeScript Types
+│   ├── sync/
+│   │   └── offlineSync.ts# Offline queue, background sync & conflict resolution
+│   └── storage.ts        # Client LocalStorage fallback
+├── services/             # Domain service layer
+│   ├── notes.service.ts
+│   ├── tasks.service.ts
+│   ├── bookmarks.service.ts
+│   ├── journal.service.ts
+│   ├── graph.service.ts
+│   ├── calendar.service.ts
+│   ├── mindmap.service.ts
+│   ├── files.service.ts
+│   ├── notifications.service.ts
+│   ├── settings.service.ts
+│   └── search.service.ts
+├── store/
+│   └── useMemoryStore.ts # Zustand global store integrated with Supabase Realtime
+└── supabase/
+    ├── migrations/       # PostgreSQL SQL Migration scripts
+    └── seed.sql          # Seed data
+```
 
 ---
 
-## 🔒 Storage Engine Specification (`lib/storage.ts`)
+## 🔒 Security
 
-All storage interactions are strictly encapsulated within `lib/storage.ts`:
-
-- `save()`: Persists a new item to LocalStorage.
-- `update()`: Modifies an existing item by ID.
-- `remove()`: Deletes an item by ID.
-- `get()`: Fetches a single item by ID.
-- `getAll()`: Retrieves full database or entity arrays.
-- `search()`: Runs fuzzy Fuse.js queries.
-- `backup()` / `restore()`: JSON stringification & parsing.
-- `exportJSON()` / `importJSON()`: File export/import.
-- `clear()`: Wipes or resets local vault.
+* **Row Level Security (RLS)**: Enforced across all 27 tables.
+* **Storage Bucket Policies**: Strict user folder prefix isolation (`auth.uid()`).
+* **Input Sanitization**: Enforced via Zod & TypeScript types.
 
 ---
 
-## 📜 License
-
-Distributed under the MIT License. See `LICENSE` for details.
-
----
-
-## 👨‍💻 Author
-
-Crafted with precision by a Senior Software Architect & UI/UX Engineer.
+## 📄 License
+MIT License. Built for production excellence with Next.js 15 and Supabase.

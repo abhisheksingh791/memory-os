@@ -1,0 +1,4 @@
+node_modules
+.next
+.env.local
+.gitdocker build -t notice-board .

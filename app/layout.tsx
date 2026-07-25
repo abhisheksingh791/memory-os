@@ -8,6 +8,8 @@ import { Sidebar } from '../components/Sidebar';
 import { BottomNav } from '../components/BottomNav';
 import { CommandPalette } from '../components/CommandPalette';
 import { QuickCaptureModal } from '../components/QuickCaptureModal';
+import { AuthModal } from '../components/AuthModal';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -20,8 +22,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Memory OS | The Operating System for Your Mind',
-  description: 'Portfolio-grade, offline-first spatial memory vault, rich markdown notes, tasks, daily reflection, knowledge graphs & mind maps.',
+  title: 'LPU Memory OS | Production Cloud & Offline Vault',
+  description: 'Production-grade cognitive engine, Supabase PostgreSQL, auth, notes, tasks, mind maps & full text search.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
@@ -29,8 +31,8 @@ export const metadata: Metadata = {
     title: 'Memory OS',
   },
   openGraph: {
-    title: 'Memory OS | The Operating System for Your Mind',
-    description: 'Offline-first cognitive engine, notes, tasks, mind maps & knowledge graph.',
+    title: 'LPU Memory OS | The Operating System for Your Mind',
+    description: 'Supabase-powered cognitive engine, notes, tasks, mind maps & knowledge graph.',
     type: 'website',
   },
 };
@@ -56,12 +58,15 @@ export default function RootLayout({
             <div className="flex flex-1 w-full min-h-[calc(100vh-61px)]">
               <Sidebar />
               <main className="flex-1 p-4 md:p-8 max-w-7xl mx-auto w-full pb-24 md:pb-12 overflow-x-hidden">
-                {children}
+                <ErrorBoundary>
+                  {children}
+                </ErrorBoundary>
               </main>
             </div>
             <BottomNav />
             <CommandPalette />
             <QuickCaptureModal />
+            <AuthModal />
           </PWAProvider>
         </ThemeProvider>
       </body>
